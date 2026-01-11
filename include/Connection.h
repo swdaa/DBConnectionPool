@@ -1,7 +1,9 @@
 #pragma once
 
+#include <ctime>
 #include <mysql/mysql.h>
 #include <string>
+
 using namespace std;
 #include "public.h"
 
@@ -29,7 +31,7 @@ class Connection
         }
         return true;
     }
-    
+
     MYSQL_RES *query(string sql)
     {
         if (mysql_query(_conn, sql.c_str()))
@@ -39,7 +41,10 @@ class Connection
         }
         return mysql_use_result(_conn);
     }
+    void refreshAliveTime() { _aviveTime = clock(); }
+    clock_t getAliveTime() { return clock() - _aviveTime; }
 
   private:
-    MYSQL *_conn; // one connection to MySQL server
+    MYSQL *_conn;       // one connection to MySQL server
+    clock_t _aviveTime; // last active time
 };
